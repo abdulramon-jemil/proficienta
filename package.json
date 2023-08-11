@@ -1,7 +1,7 @@
 {
   "name": "proficienta",
   "version": "1.0.0",
-  "description": "A platform for creating and sharing text-based courses",
+  "description": "Learn. Create. Achieve",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@chakra-ui/next-js": "^2.1.4",
-    "@chakra-ui/react": "^2.7.1",
+    "@chakra-ui/react": "^2.8.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "framer-motion": "^10.12.18",

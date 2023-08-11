@@ -2,7 +2,7 @@ import { SITE_DESCRIPTION, SITE_NAME } from "@/constants/site"
 import { Providers } from "./providers"
 
 export const metadata = {
-  title: `${SITE_NAME} - ${SITE_DESCRIPTION}`,
+  title: `${SITE_NAME} | ${SITE_DESCRIPTION}`,
   description: SITE_DESCRIPTION
 }
 

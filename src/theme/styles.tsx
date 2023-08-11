@@ -1,7 +1,11 @@
 export const Styles = {
   global: {
-    html: {
+    body: {
       fontSize: "14px"
+    },
+
+    html: {
+      fontSize: "16px"
     }
   }
 }
