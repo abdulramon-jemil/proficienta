@@ -93,7 +93,7 @@ function FinalizedVerificationBox({
         type="submit"
         w="full"
       >
-        Sign in here
+        Sign in on this device
       </Button>
     </Box>
   )
