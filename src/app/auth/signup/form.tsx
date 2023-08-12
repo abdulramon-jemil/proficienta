@@ -46,8 +46,8 @@ export function SignUpForm({
         m="auto"
         src={PublicImageUrls.SiteLogo}
         width={50}
-        h={12}
-        w={12}
+        h={14}
+        w={14}
       />
 
       <Heading

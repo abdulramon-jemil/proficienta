@@ -19,7 +19,8 @@ import { capitalize } from "@/lib/string"
 
 import SuccessIcon from "@/visuals/icons/success"
 import ExpiredIcon from "@/visuals/icons/expired"
-import { nextUrlFor } from "@/controllers/shared/next-url"
+import { getDistinctNextURL } from "@/controllers/shared/next-url"
+import { AUTH_PAGE_DEFAULT_REDIRECT_URL } from "./base"
 
 export type EmailVerificationStatus = "pending" | "expired" | "verified"
 
@@ -69,7 +70,10 @@ function CtaSection({
         {...(status === "verified"
           ? {
               as: NextLink,
-              href: nextUrlFor(`${pathname}?${searchParams.toString()}`)
+              href: getDistinctNextURL(
+                `${pathname}?${searchParams.toString()}`,
+                AUTH_PAGE_DEFAULT_REDIRECT_URL
+              )
             }
           : {})}
         colorScheme="primary"

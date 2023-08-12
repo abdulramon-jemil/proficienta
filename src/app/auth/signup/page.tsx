@@ -3,9 +3,11 @@
 import { useState } from "react"
 import { useSignUp } from "@clerk/nextjs"
 import { Box, useToast } from "@chakra-ui/react"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
 import {
   assignNextURL,
+  getDistinctNextURL,
   hasDistinctNextURL,
   nextUrlFor
 } from "@/controllers/shared/next-url"
@@ -14,7 +16,9 @@ import {
   EmailVerificationBox,
   type EmailVerificationStatus
 } from "@/app/auth/verification"
+
 import { AUTH_VERIFICATION_PAGE } from "@/constants/pages"
+import { AUTH_PAGE_DEFAULT_REDIRECT_URL } from "@/app/auth/base"
 
 import { SignUpForm } from "./form"
 import type { SignUpInfo } from "./base"
@@ -30,8 +34,12 @@ function getFullAuthVerificationURL() {
 }
 
 export default function SignUpPage() {
-  const { isLoaded: clerkIsLoaded, signUp } = useSignUp()
   const toast = useToast()
+  const { isLoaded: clerkIsLoaded, signUp } = useSignUp()
+
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
 
   const [magicLinkFlowHandler, setMagicLinkFlowHandler] = useState<ReturnType<
     NonNullable<typeof signUp>["createMagicLinkFlow"]
@@ -82,6 +90,14 @@ export default function SignUpPage() {
 
     if (updatedSignUp.status === "complete") {
       setEmailVerification({ isStarted: true, status: "verified" })
+      setTimeout(() => {
+        router.push(
+          getDistinctNextURL(
+            `${pathname}?${searchParams.toString()}`,
+            AUTH_PAGE_DEFAULT_REDIRECT_URL
+          )
+        )
+      })
     }
   }
 
