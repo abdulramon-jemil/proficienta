@@ -18,7 +18,10 @@ import {
 } from "@/app/auth/verification"
 
 import { AUTH_VERIFICATION_PAGE } from "@/constants/pages"
-import { AUTH_PAGE_DEFAULT_REDIRECT_URL } from "@/app/auth/base"
+import {
+  AUTH_PAGE_DEFAULT_REDIRECT_URL,
+  AUTH_PAGE_REDIRECT_DELAY_MS
+} from "@/app/auth/base"
 
 import { SignUpForm } from "./form"
 import type { SignUpInfo } from "./base"
@@ -35,7 +38,11 @@ function getFullAuthVerificationURL() {
 
 export default function SignUpPage() {
   const toast = useToast()
-  const { isLoaded: clerkIsLoaded, signUp } = useSignUp()
+  const {
+    isLoaded: clerkIsLoaded,
+    signUp,
+    setActive: setActiveSessionInSignUpClient
+  } = useSignUp()
 
   const router = useRouter()
   const pathname = usePathname()
@@ -83,21 +90,30 @@ export default function SignUpPage() {
     setEmailVerification({ isStarted: true, status: "pending" })
 
     const updatedSignUp = await magicLinkFlowPromise
+    const theEmailVerification = updatedSignUp.verifications.emailAddress
 
-    if (updatedSignUp.verifications.emailAddress.status === "expired") {
+    if (theEmailVerification.status === "expired") {
       setEmailVerification({ isStarted: true, status: "expired" })
     }
 
     if (updatedSignUp.status === "complete") {
       setEmailVerification({ isStarted: true, status: "verified" })
-      setTimeout(() => {
-        router.push(
-          getDistinctNextURL(
-            `${pathname}?${searchParams.toString()}`,
-            AUTH_PAGE_DEFAULT_REDIRECT_URL
-          )
-        )
-      })
+      if (!theEmailVerification.verifiedFromTheSameClient()) {
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        setActiveSessionInSignUpClient({
+          session: updatedSignUp.createdSessionId,
+          beforeEmit: () => {
+            setTimeout(() => {
+              router.push(
+                getDistinctNextURL(
+                  `${pathname}?${searchParams.toString()}`,
+                  AUTH_PAGE_DEFAULT_REDIRECT_URL
+                )
+              )
+            }, AUTH_PAGE_REDIRECT_DELAY_MS)
+          }
+        })
+      }
     }
   }
 
