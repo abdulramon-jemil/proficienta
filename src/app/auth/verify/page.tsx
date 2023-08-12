@@ -1,5 +1,11 @@
 "use client"
 
+import NextLink from "next/link"
+import { usePathname, useSearchParams } from "next/navigation"
+import { useEffect, useState } from "react"
+import { MagicLinkErrorCode, isMagicLinkError, useClerk } from "@clerk/nextjs"
+import { Bars } from "react-loader-spinner"
+
 import {
   Box,
   Button,
@@ -7,22 +13,46 @@ import {
   Heading,
   Icon,
   Text,
-  VStack
+  VStack,
+  useToast
 } from "@chakra-ui/react"
 
-import { Bars } from "react-loader-spinner"
-// import SuccessIcon from "@/visuals/icons/success"
-// import ExpiredIcon from "@/visuals/icons/expired"
+import SuccessIcon from "@/visuals/icons/success"
+import ExpiredIcon from "@/visuals/icons/expired"
 import FailedIcon from "@/visuals/icons/failed"
 import { Colors } from "@/theme/foundations/colors"
+import { SIGN_IN_PAGE } from "@/constants/pages"
 
-function FinalizedVerificationBox() {
+import {
+  assignNextURL,
+  getDistinctNextURL,
+  hasDistinctNextURL,
+  nextUrlFor
+} from "@/controllers/shared/next-url"
+
+import { AUTH_PAGE_DEFAULT_REDIRECT_URL } from "../base"
+
+type PendingVerificationStatus = "loading"
+type FinalizedVerificationStatus = "verified" | "expired" | "failed"
+type VerificationStatus =
+  | PendingVerificationStatus
+  | FinalizedVerificationStatus
+
+function FinalizedVerificationBox({
+  status
+}: {
+  status: FinalizedVerificationStatus
+}) {
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const fullPagePath = `${pathname}?${searchParams.toString()}`
+
   return (
     <Box>
       <Center mb={8}>
-        {/* <Icon as={SuccessIcon} boxSize={24} /> */}
-        {/* <Icon as={ExpiredIcon} boxSize={24} /> */}
-        <Icon as={FailedIcon} boxSize={24} />
+        {status === "verified" && <Icon as={SuccessIcon} boxSize={24} />}
+        {status === "expired" && <Icon as={ExpiredIcon} boxSize={24} />}
+        {status === "failed" && <Icon as={FailedIcon} boxSize={24} />}
       </Center>
 
       <Heading
@@ -33,21 +63,37 @@ function FinalizedVerificationBox() {
         mx="auto"
         textAlign="center"
       >
-        {/* Verification Successful */}
-        {/* Link Expired */}
-        Verification Failed
+        {
+          {
+            verified: "Verification Successful",
+            expired: "Link Expired",
+            failed: "Verification Failed"
+          }[status]
+        }
       </Heading>
 
       <Text my={4} textAlign="center">
-        {/* You can return to the previous tab or use
-        the link below (if you signed in on this device) */}
-        {/* To ensure safety, verification links expire after a certain period */}
-        We were unable to verify you, please sign in again
+        {
+          {
+            verified: "Please return to the original tab to continue",
+            expired: "Please sign in again",
+            failed: "Please sign in again"
+          }[status]
+        }
       </Text>
 
-      <Button colorScheme="primary" type="submit" w="full">
-        {/* Continue */}
-        Sign In
+      <Button
+        as={NextLink}
+        colorScheme="primary"
+        href={
+          hasDistinctNextURL(fullPagePath)
+            ? assignNextURL(SIGN_IN_PAGE, nextUrlFor(fullPagePath))
+            : SIGN_IN_PAGE
+        }
+        type="submit"
+        w="full"
+      >
+        Sign in here
       </Button>
     </Box>
   )
@@ -75,8 +121,52 @@ function PendingVerificationBox() {
 }
 
 export default function VerificationPage() {
+  const [status, setStatus] = useState<VerificationStatus>("loading")
+  const { handleMagicLinkVerification } = useClerk()
+  const toast = useToast()
+
+  useEffect(() => {
+    async function doVerification() {
+      try {
+        const nextUrlToUse = getDistinctNextURL(
+          window.location.href,
+          AUTH_PAGE_DEFAULT_REDIRECT_URL
+        )
+        await handleMagicLinkVerification({
+          redirectUrl: nextUrlToUse,
+          redirectUrlComplete: nextUrlToUse
+        })
+
+        setStatus("verified")
+      } catch (error) {
+        let verificationStatus: FinalizedVerificationStatus = "failed"
+        const theError = error as Error
+
+        if (isMagicLinkError(theError)) {
+          if (theError.code === MagicLinkErrorCode.Expired) {
+            verificationStatus = "expired"
+          } else {
+            throw theError
+          }
+        }
+
+        setStatus(verificationStatus)
+      }
+    }
+
+    doVerification().catch(() => {
+      toast({
+        title: "Verification check failed",
+        status: "error"
+      })
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
-    <FinalizedVerificationBox />
-    // <PendingVerificationBox />
+    <>
+      {status === "loading" && <PendingVerificationBox />}
+      {status !== "loading" && <FinalizedVerificationBox status={status} />}
+    </>
   )
 }
