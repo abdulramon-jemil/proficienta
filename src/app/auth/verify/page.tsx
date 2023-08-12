@@ -99,7 +99,6 @@ function FinalizedVerificationBox({
   )
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function PendingVerificationBox() {
   return (
     <VStack justifyContent="center" minH={72}>
