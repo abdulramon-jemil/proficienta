@@ -20,7 +20,8 @@ import {
 import { AUTH_VERIFICATION_PAGE } from "@/constants/pages"
 import {
   AUTH_PAGE_DEFAULT_REDIRECT_URL,
-  AUTH_PAGE_REDIRECT_DELAY_MS
+  AUTH_PAGE_REDIRECT_DELAY_MS,
+  getAuthErrorMessageWithFallback
 } from "@/app/auth/base"
 
 import { SignUpForm } from "./form"
@@ -131,7 +132,10 @@ export default function SignUpPage() {
       await setupMagicLinkVerification()
     } catch (error) {
       toast({
-        title: "Unable to resend verification link",
+        title: getAuthErrorMessageWithFallback(
+          error,
+          "Unable to resend verification link"
+        ),
         status: "error"
       })
     }
@@ -145,9 +149,12 @@ export default function SignUpPage() {
       await setupMagicLinkVerification()
     }
 
-    initializeEmailVerificationProcess().catch(() => {
+    initializeEmailVerificationProcess().catch((error) => {
       toast({
-        title: "Unable to complete the email verification process",
+        title: getAuthErrorMessageWithFallback(
+          error,
+          "Unable to complete the email verification process"
+        ),
         status: "error"
       })
     })

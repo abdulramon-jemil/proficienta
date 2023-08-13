@@ -15,13 +15,15 @@ import {
 import { AUTH_VERIFICATION_PAGE } from "@/constants/pages"
 import { EmailVerificationBox } from "@/app/auth/verification"
 
-import type { SignInInfo } from "./base"
-import { SignInForm } from "./form"
-import type { EmailVerificationStatus } from "../verification"
+import type { EmailVerificationStatus } from "@/app/auth/verification"
 import {
   AUTH_PAGE_DEFAULT_REDIRECT_URL,
-  AUTH_PAGE_REDIRECT_DELAY_MS
-} from "../base"
+  AUTH_PAGE_REDIRECT_DELAY_MS,
+  getAuthErrorMessageWithFallback
+} from "@/app/auth/base"
+
+import type { SignInInfo } from "./base"
+import { SignInForm } from "./form"
 
 function getFullAuthVerificationURL() {
   return hasDistinctNextURL(window.location.href)
@@ -144,7 +146,10 @@ export default function SignUpPage() {
       await setupMagicLinkVerification(emailVerification.emailAddressId)
     } catch (error) {
       toast({
-        title: "Unable to resend verification link",
+        title: getAuthErrorMessageWithFallback(
+          error,
+          "Unable to resend verification link"
+        ),
         status: "error"
       })
     }
@@ -168,9 +173,12 @@ export default function SignUpPage() {
       await setupMagicLinkVerification(emailAddressId)
     }
 
-    initializeEmailVerificationProcess().catch(() => {
+    initializeEmailVerificationProcess().catch((error) => {
       toast({
-        title: "Unable to complete the email verification process",
+        title: getAuthErrorMessageWithFallback(
+          error,
+          "Unable to complete the email verification process"
+        ),
         status: "error"
       })
     })
