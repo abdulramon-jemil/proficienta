@@ -1,5 +1,3 @@
-"use client"
-
 import NextImage from "next/image"
 import { Image as ChakraNextImage } from "@chakra-ui/next-js"
 
@@ -13,10 +11,24 @@ import {
   Stack
 } from "@chakra-ui/react"
 
+import type { Dispatch, SetStateAction } from "react"
+
 import { SITE_NAME } from "@/constants/site"
 import { PublicImageUrls } from "@/controllers/asset"
 
-export function SignInForm() {
+import type { SignInInfo } from "./base"
+
+export function SignInForm({
+  enableSignInButton,
+  handleSignIn,
+  signInInfoState
+}: {
+  enableSignInButton: boolean
+  handleSignIn: () => unknown
+  signInInfoState: [SignInInfo, Dispatch<SetStateAction<SignInInfo>>]
+}) {
+  const [signInInfo, setSignInInfo] = signInInfoState
+
   return (
     <Box>
       <ChakraNextImage
@@ -42,13 +54,32 @@ export function SignInForm() {
         Welcome back
       </Heading>
 
-      <Stack as="form" mt={6} spacing={3}>
+      <Stack
+        as="form"
+        mt={6}
+        onSubmit={(event) => {
+          event.preventDefault()
+          handleSignIn.call(null)
+        }}
+        spacing={3}
+      >
         <FormControl isRequired>
           <FormLabel>Email Address</FormLabel>
-          <Input type="email" />
+          <Input
+            onChange={(event) => {
+              setSignInInfo({ emailAddress: event.target.value })
+            }}
+            type="email"
+            value={signInInfo.emailAddress}
+          />
         </FormControl>
 
-        <Button colorScheme="primary" type="submit" w="full">
+        <Button
+          colorScheme="primary"
+          isDisabled={!enableSignInButton}
+          type="submit"
+          w="full"
+        >
           Continue
         </Button>
       </Stack>
