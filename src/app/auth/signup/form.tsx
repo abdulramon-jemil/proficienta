@@ -32,11 +32,6 @@ export function SignUpForm({
 
   const { firstName, lastName, emailAddress } = signUpInfo
 
-  const initializeSignUp: React.FormEventHandler<HTMLFormElement> = (event) => {
-    event.preventDefault()
-    handleSignUp.call(null)
-  }
-
   return (
     <Box>
       <ChakraNextImage
@@ -66,10 +61,10 @@ export function SignUpForm({
         as="form"
         mt={6}
         spacing={3}
-        onSubmit={
-          // Required since Chakra is unable to infer type from `as` prop
-          initializeSignUp as unknown as React.FormEventHandler<HTMLDivElement>
-        }
+        onSubmit={(event) => {
+          event.preventDefault()
+          handleSignUp.call(null)
+        }}
       >
         <HStack spacing={3}>
           <FormControl isRequired>
