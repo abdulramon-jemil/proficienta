@@ -1,6 +1,6 @@
 import { PUBLIC_ENV_SITE_ORIGIN } from "./env"
 
-export const NEXT_URL_FALLBACK = "/"
+export const NEXT_URL_FALLBACK_PATHNAME = "/"
 export const NEXT_URL_QUERY_PARAM = "next"
 
 export function toUsableURLObject(string: string) {
@@ -31,7 +31,7 @@ export function nextUrlFor(url: string, includeOrigin = false) {
   const definedNextURL = usableURLObject.searchParams.get(NEXT_URL_QUERY_PARAM)
 
   const usableNextURLObject = toUsableURLObject(
-    definedNextURL ?? NEXT_URL_FALLBACK
+    definedNextURL ?? NEXT_URL_FALLBACK_PATHNAME
   )
 
   return includeOrigin
@@ -86,7 +86,7 @@ export function hasDistinctNextURL(url: string) {
   if (url === "")
     throw new TypeError("Cannot assign next url to non string value")
 
-  if (nextUrlFor(url) === NEXT_URL_FALLBACK) return false
+  if (nextUrlFor(url, false) === NEXT_URL_FALLBACK_PATHNAME) return false
   return true
 }
 
@@ -96,7 +96,8 @@ export function getDistinctNextURL(
   includeOrigin = false
 ) {
   const definedNextURL = nextUrlFor(url, includeOrigin)
-  if (definedNextURL !== NEXT_URL_FALLBACK) return definedNextURL
+  if (toUsableURLObject(definedNextURL).pathname !== NEXT_URL_FALLBACK_PATHNAME)
+    return definedNextURL
 
   const usableFallbackURLObject = toUsableURLObject(fallbackURL)
   return includeOrigin
