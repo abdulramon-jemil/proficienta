@@ -101,18 +101,17 @@ export default function SignUpPage() {
       if (!theEmailVerification.verifiedFromTheSameClient()) {
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         setActiveSessionInSignUpClient({
-          session: updatedSignUp.createdSessionId,
-          beforeEmit: () => {
-            setTimeout(() => {
-              router.push(
-                getDistinctNextURL(
-                  `${pathname}?${searchParams.toString()}`,
-                  AUTH_PAGE_DEFAULT_REDIRECT_URL
-                )
-              )
-            }, AUTH_PAGE_REDIRECT_DELAY_MS)
-          }
+          session: updatedSignUp.createdSessionId
         })
+
+        setTimeout(() => {
+          router.push(
+            getDistinctNextURL(
+              `${pathname}?${searchParams.toString()}`,
+              AUTH_PAGE_DEFAULT_REDIRECT_URL
+            )
+          )
+        }, AUTH_PAGE_REDIRECT_DELAY_MS)
       }
     }
   }
