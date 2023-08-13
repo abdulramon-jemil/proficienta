@@ -1,7 +1,9 @@
 {
   "extends": "./tsconfig.json",
   "include": [
+    "grafbase",
     "src",
+    "codegen.ts",
     "lint-staged.config.js",
     "next.config.js",
     ".eslintrc.js",

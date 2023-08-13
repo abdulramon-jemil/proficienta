@@ -4,18 +4,23 @@
   "description": "Learn. Create. Achieve",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "concurrently \"npm run gql:dev\" \"npm run next:dev\"",
+    "next:dev": "next dev",
+    "gql:dev": "graphql-codegen -r dotenv/config --watch",
+    "gql-codegen": "graphql-codegen -r dotenv/config",
     "build": "next build",
     "format": "prettier --write .",
     "lint": "eslint ./ --ext .js,.jsx,.ts,.tsx",
     "prepare": "husky install",
-    "start": "next start"
+    "start": "next start",
+    "type-check": "tsc -p tsconfig.json"
   },
   "dependencies": {
     "@chakra-ui/anatomy": "^2.2.0",
     "@chakra-ui/next-js": "^2.1.4",
     "@chakra-ui/react": "^2.8.0",
     "@chakra-ui/styled-system": "^2.9.1",
+    "@clerk/clerk-sdk-node": "^4.12.2",
     "@clerk/nextjs": "^4.23.2",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
@@ -23,14 +28,21 @@
     "next": "13.4.8",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-loader-spinner": "^5.3.4"
+    "react-loader-spinner": "^5.3.4",
+    "svix": "^1.8.1"
   },
   "devDependencies": {
+    "@grafbase/sdk": "^0.5.0",
+    "@graphql-codegen/cli": "^5.0.0",
+    "@graphql-codegen/client-preset": "^4.1.0",
+    "@parcel/watcher": "^2.2.0",
     "@types/node": "20.3.3",
     "@types/react": "18.2.14",
     "@types/react-dom": "18.2.6",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
+    "concurrently": "^8.2.0",
+    "dotenv": "^16.3.1",
     "eslint": "^8.2.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-typescript": "^17.1.0",

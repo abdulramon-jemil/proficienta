@@ -22,6 +22,7 @@ module.exports = {
   plugins: ["@typescript-eslint", "eslint-comments"],
 
   rules: {
+    "@typescript-eslint/non-nullable-type-assertion-style": "off",
     "import/prefer-default-export": "off",
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",
