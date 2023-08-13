@@ -119,7 +119,7 @@ function PendingVerificationBox() {
   )
 }
 
-export default function VerificationPage() {
+export default function EmailVerificationSetupPage() {
   const [status, setStatus] = useState<VerificationStatus>("loading")
   const { handleMagicLinkVerification } = useClerk()
   const toast = useToast()
