@@ -24,7 +24,7 @@ export function SignUpForm({
   signUpInfoState,
   enableSignUpButton
 }: {
-  handleSignUp: () => void
+  handleSignUp: () => unknown
   enableSignUpButton: boolean
   signUpInfoState: [SignUpInfo, Dispatch<SetStateAction<SignUpInfo>>]
 }) {
