@@ -4,6 +4,7 @@
     "grafbase",
     "src",
     "codegen.ts",
+    "graphql.config.ts",
     "lint-staged.config.js",
     "next.config.js",
     ".eslintrc.js",

@@ -1,5 +1,9 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { CodegenConfig } from "@graphql-codegen/cli"
+import { type CodegenConfig } from "@graphql-codegen/cli"
+import {
+  GraphQLCodeGenOutputDir,
+  GraphQLDocumentsSources
+} from "./graphql.config"
 
 const config: CodegenConfig = {
   schema: {
@@ -10,8 +14,11 @@ const config: CodegenConfig = {
     }
   },
   generates: {
-    "./src/graphql-ts/generated/": {
+    [GraphQLCodeGenOutputDir]: {
       preset: "client",
+      presetConfig: {
+        fragmentMasking: { unmaskFunctionName: "getFragmentData" }
+      },
       config: {
         arrayInputCoercion: false,
         avoidOptionals: true,
@@ -35,13 +42,8 @@ const config: CodegenConfig = {
     }
   },
 
-  documents: [
-    "./src/graphql-ts/queries/*.tsx",
-    "./src/graphql-ts/mutations/*.tsx"
-  ],
-
-  overwrite: true,
-  watch: true
+  documents: GraphQLDocumentsSources,
+  overwrite: true
 }
 
 export default config

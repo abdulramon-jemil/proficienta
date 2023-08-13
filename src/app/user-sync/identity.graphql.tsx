@@ -1,4 +1,4 @@
-import { graphql, FragmentType, useFragment } from "@/graphql-ts/generated"
+import { graphql, getFragmentData, type FragmentType } from "@/graphql"
 
 export const query = graphql(/* GraphQL */ `
   query FirstTenUserProfiles($count: Int!) {
@@ -26,7 +26,7 @@ function Film({
 }: {
   userDetails: FragmentType<typeof UserFragment>
 }) {
-  const details = useFragment(UserFragment, userDetails)
+  const details = getFragmentData(UserFragment, userDetails)
   return <div>{details.id}</div>
 }
 
