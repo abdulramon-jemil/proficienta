@@ -6,7 +6,7 @@ import { ENV_SERVER_GRAFBASE_API_KEY } from "@/controllers/server/env"
 import { ClerkUserDeletionSyncDocument } from "./user-sync.graphql"
 import type { UserEventSyncResult } from "./base"
 
-export async function syncClerkUserUpdate(
+export async function syncClerkUserDeletion(
   user: DeletedObjectJSON
 ): Promise<UserEventSyncResult> {
   try {

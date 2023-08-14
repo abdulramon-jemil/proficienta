@@ -1,15 +1,15 @@
 import { graphql } from "@/graphql"
 
 export const ClerkUserCreationSyncDocument = graphql(/* GraphQL */ `
-  mutation SyncClerkUserProfileCreation(
+  mutation SyncClerkUserCreation(
     $clerkId: ID!
     $firstName: String!
     $lastName: String!
   ) {
-    userProfileCreate(
+    userCreate(
       input: { clerkId: $clerkId, firstName: $firstName, lastName: $lastName }
     ) {
-      userProfile {
+      user {
         id
       }
     }
@@ -17,16 +17,16 @@ export const ClerkUserCreationSyncDocument = graphql(/* GraphQL */ `
 `)
 
 export const ClerkUserUpdateSyncDocument = graphql(/* GraphQL */ `
-  mutation SyncClerkUserProfileUpdate(
+  mutation SyncClerkUserUpdate(
     $clerkId: ID!
     $firstName: String!
     $lastName: String!
   ) {
-    userProfileUpdate(
+    userUpdate(
       by: { clerkId: $clerkId }
       input: { firstName: $firstName, lastName: $lastName }
     ) {
-      userProfile {
+      user {
         id
       }
     }
@@ -34,9 +34,9 @@ export const ClerkUserUpdateSyncDocument = graphql(/* GraphQL */ `
 `)
 
 export const ClerkUserDeletionSyncDocument = graphql(/* GraphQL */ `
-  mutation SyncClerkUserProfileDeletion($clerkId: ID!) {
-    userProfileUpdate(by: { clerkId: $clerkId }, input: { isDeleted: true }) {
-      userProfile {
+  mutation SyncClerkUserDeletion($clerkId: ID!) {
+    userUpdate(by: { clerkId: $clerkId }, input: { isDeleted: true }) {
+      user {
         id
       }
     }

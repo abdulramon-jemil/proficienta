@@ -3,10 +3,12 @@ import { Webhook } from "svix"
 import type { WebhookEvent } from "@clerk/clerk-sdk-node"
 
 import { ENV_USER_SYNC_WEBHOOK_SIGNING_SECRET } from "@/controllers/server/env"
-import { getSvixHeadersFromRequest } from "./base"
 import { syncClerkUserCreation } from "./user-create"
-import type { UserEventSyncResult } from "./base"
 import { syncClerkUserUpdate } from "./user-update"
+import { syncClerkUserDeletion } from "./user-delete"
+
+import { getSvixHeadersFromRequest } from "./base"
+import type { UserEventSyncResult } from "./base"
 
 export async function POST(request: Request) {
   const body = await request.text()
@@ -39,8 +41,8 @@ export async function POST(request: Request) {
     syncResult = await syncClerkUserCreation(payload.data)
   else if (payload.type === "user.updated")
     syncResult = await syncClerkUserUpdate(payload.data)
-  // else if (payload.type === "user.deleted")
-  //   syncResult = await syncClerkUserUpdate(payload.data)
+  else if (payload.type === "user.deleted")
+    syncResult = await syncClerkUserDeletion(payload.data)
 
   syncResult = syncResult as UserEventSyncResult
 
