@@ -5,6 +5,8 @@ import type { WebhookEvent } from "@clerk/clerk-sdk-node"
 import { ENV_USER_SYNC_WEBHOOK_SIGNING_SECRET } from "@/controllers/server/env"
 import { getSvixHeadersFromRequest } from "./base"
 import { syncClerkUserCreation } from "./user-create"
+import type { UserEventSyncResult } from "./base"
+import { syncClerkUserUpdate } from "./user-update"
 
 export async function POST(request: Request) {
   const body = await request.text()
@@ -31,7 +33,19 @@ export async function POST(request: Request) {
       ? (message as WebhookEvent)
       : (JSON.parse(body) as WebhookEvent)
 
-  if (payload.type === "user.created") await syncClerkUserCreation(payload.data)
+  let syncResult: UserEventSyncResult | null = null
 
-  return NextResponse.json({ applied: verifiedSuccessfully }, { status: 200 })
+  if (payload.type === "user.created")
+    syncResult = await syncClerkUserCreation(payload.data)
+  else if (payload.type === "user.updated")
+    syncResult = await syncClerkUserUpdate(payload.data)
+  // else if (payload.type === "user.deleted")
+  //   syncResult = await syncClerkUserUpdate(payload.data)
+
+  syncResult = syncResult as UserEventSyncResult
+
+  return NextResponse.json(
+    {},
+    { status: syncResult.status === "success" ? 204 : 500 }
+  )
 }

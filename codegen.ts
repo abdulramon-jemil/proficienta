@@ -24,7 +24,7 @@ const config: CodegenConfig = {
         avoidOptionals: true,
         defaultScalarType: "unknown",
         enumAsTypes: true,
-        documentMode: "string",
+        // documentMode: "string",
         scalars: {
           // Grafbase Scalar types
           Date: "string",

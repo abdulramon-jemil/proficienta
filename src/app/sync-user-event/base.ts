@@ -6,3 +6,7 @@ export function getSvixHeadersFromRequest(request: Request) {
     "svix-signature": request.headers.get("svix-signature") ?? ""
   }
 }
+
+export interface UserEventSyncResult {
+  status: "success" | "failed"
+}
