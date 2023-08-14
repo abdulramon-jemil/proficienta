@@ -4,16 +4,17 @@
   "description": "Learn. Create. Achieve",
   "private": true,
   "scripts": {
+    "build": "next build",
     "dev": "concurrently \"npm run gql:dev\" \"npm run next:dev\"",
-    "next:dev": "next dev",
     "gql:dev": "graphql-codegen -r dotenv/config --watch",
     "gql-codegen": "graphql-codegen -r dotenv/config",
-    "build": "next build",
-    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "format:fix": "prettier --write .",
     "lint": "eslint ./ --ext .js,.jsx,.ts,.tsx",
+    "next:dev": "next dev",
     "prepare": "husky install",
     "start": "next start",
-    "type-check": "tsc -p tsconfig.json"
+    "type:check": "tsc -p tsconfig.json"
   },
   "dependencies": {
     "@chakra-ui/anatomy": "^2.2.0",
@@ -25,6 +26,7 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "framer-motion": "^10.12.18",
+    "graphql-request": "^6.1.0",
     "next": "13.4.8",
     "react": "18.2.0",
     "react-dom": "18.2.0",

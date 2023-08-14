@@ -12,6 +12,7 @@ const publicPages = [AUTH_VERIFICATION_PAGE]
 const guestAuthPages = [SIGN_IN_PAGE, SIGN_UP_PAGE]
 
 export const middleware = authMiddleware({
+  debug: true,
   publicRoutes: publicPages,
   afterAuth(auth, req) {
     const requestedPath = req.nextUrl.pathname
@@ -28,5 +29,5 @@ export const middleware = authMiddleware({
 })
 
 export const config = {
-  matcher: "/((?!_next/image|_next/static|favicon.ico|icon.svg).*)"
+  matcher: "/auth/(.*)"
 }
